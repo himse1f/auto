@@ -64,7 +64,7 @@ Copy access credentials for SSH access by opening the server details.
 
 ## First SSH session
 
-Login to your newly installed node as "root".
+Login to your newly installed node as "root" using Putty. The IP address can be found on the same screen as the Location, Username and Password (as seen above).
 
 <img src="images/masternode_vps/first-ssh-session.png" alt="VPS sizing" class="inline"/>
 
