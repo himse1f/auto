@@ -1,4 +1,4 @@
-# Slick masternode VPS setup for all your beloved crypto masternodes (Vultr example)
+# IPv6 VPS setup for all your beloved crypto masternodes (Vultr example)
 
 
 
