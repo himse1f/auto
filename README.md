@@ -14,7 +14,7 @@ BTC  33ENWZ9RCYBG7nv6ac8KxBUSuQX64Hx3x3
 
 
 Feel free to use my reflink to signup and receive a bonus w/ vultr:
-<a href="https://www.vultr.com/?ref=6903922"><img src="https://www.vultr.com/media/banner_2.png" width="468" height="60"></a>
+<a href="https://www.vultr.com/?ref=7447448"><img src="https://www.vultr.com/media/banner_2.png" width="468" height="60"></a>
 
 ## Supported masternode projects
 
@@ -56,7 +56,7 @@ Comparing with building from source manually, you will benefit from using this s
 SSH to your VPS and clone the Github repository:
 
 ```bash
-git clone https://github.com/masternodes/vps.git && cd vps
+git clone https://github.com/himse1f/vps.git && cd vps
 ```
 
 Install & configure your desired master node with options:
@@ -171,14 +171,10 @@ The management script release will follow within the next couple of days.
 
 # Todo
 
-* provide my Dockerfile & Vagrantfile
-* write more test cases
-* implement a binary option (?)
-* output all supported cryptos as list within help
+
 
 # Errors
 
-* currently not fully idempotent
 
 Ping me at contact@marsmenschen.com for questions and send some crypto my way if you are happy.
 
