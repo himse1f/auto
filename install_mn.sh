@@ -292,7 +292,9 @@ function create_mn_configuration() {
                 # replace placeholders
 
 				if [ "${net}" -eq 4 ]; then
-				    echo "running sed on file ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf"                                &>> ${SCRIPT_LOGFILE}
+				    echo "running ipv4 specific sed on file ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf"                                &>> ${SCRIPT_LOGFILE}
+					sed 's/\(^.*bind\)/#\1/' -i ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf
+					sed -ie '$i bind=XXX_IPV6_INT_BASE_XXX:XXX_MNODE_INBOUND_PORT_XXX''\n' -i ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf
                     sed -e "s/XXX_GIT_PROJECT_XXX/${CODENAME}/" -e "s/XXX_NUM_XXY/${NUM}/" -e "s/XXX_NUM_XXX/${NUM}/" -e "s/XXX_MN_KEY_XXX/${MNODE_KEY}/" -e "s/XXX_PASS_XXX/${PASS}/" -e "s/XXX_IPV6_INT_BASE_XXX/${IPV4_INT_BASE}/" -e "s/XXX_NETWORK_BASE_TAG_XXX/${NETWORK_BASE_TAG}/" -e "s/XXX_MNODE_INBOUND_PORT_XXX/${MNODE_INBOUND_PORT}/" -i ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf
                 else
 				    echo "running sed on file ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf"
