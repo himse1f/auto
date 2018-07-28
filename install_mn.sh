@@ -454,7 +454,7 @@ function source_config() {
         # net is from the default config but can ultimately be
         # overwritten at runtime
         if [ -z "${net}" ]; then
-            net=${NETWORK_TYPE}
+            net=4
             echo "net EMPTY, setting to default: ${NETWORK_TYPE}" &>> ${SCRIPT_LOGFILE}
         fi
 
