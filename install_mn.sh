@@ -496,12 +496,6 @@ function source_config() {
         # show a hint for MANUAL IPv4 configuration
         if [ "${net}" -eq 4 ]; then
             NETWORK_TYPE=4
-            echo "WARNING:"
-            echo "You selected IPv4 for networking but there is no automatic workflow for this part."
-            echo "This means you will have some mamual work to do to after this configuration run."
-            echo ""
-            echo "See the following link for instructions how to add multiple ipv4 addresses on vultr:"
-            echo "${IPV4_DOC_LINK}"
         fi
         # sentinel setup
         if [ "$sentinel" -eq 1 ]; then
@@ -895,10 +889,8 @@ main() {
         echo "START OPTIONS => "
         echo "RELEASE: ${release}"
         echo "PROJECT: ${project}"
-        echo "SETUP_MNODES_COUNT: ${count}"
+        echo "SETUP_MNODES_COUNT: ${SETUP_MNODES_COUNT}"
         echo "NETWORK_TYPE: ${NETWORK_TYPE}"
-        echo "NETWORK_TYPE: ${net}"
-
         echo "END OPTIONS => "
         echo "********************** VALUES AFTER CONFIG SOURCING: ************************"
     fi
