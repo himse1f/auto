@@ -73,7 +73,7 @@ function show_help(){
     showbanner
     echo "install.sh, version $SCRIPT_VERSION";
     echo "Usage example:";
-    echo "install.sh (-p|--project) string [(-h|--help)] [(-n|--net) int] [(-c|--count) int] [(-r|--release) string] [(-w|--wipe)] [(-u|--update)] [(-x|--startnodes)]";
+    echo "install.sh (-p|--project) string [(-h|--help)] [(-n|--net) int] [(-c|--count) int] [(-r|--release) string] [(-k|--key) string] [(-w|--wipe)] [(-u|--update)] [(-x|--startnodes)]";
     echo "Options:";
     echo "-h or --help: Displays this information.";
     echo "-p or --project string: Project to be installed. REQUIRED.";
@@ -84,6 +84,7 @@ function show_help(){
     echo "-w or --wipe: Wipe ALL local data for a node type. Combine with the -p option";
     echo "-u or --update: Update a specific masternode daemon. Combine with the -p option";
     echo "-r or --release: Release version to be installed.";
+    echo "-k or --key: Masternodeprivkey to be added to configuration file.";
     echo "-x or --startnodes: Start masternodes after installation to sync with blockchain";
     exit 1;
 }
@@ -113,8 +114,9 @@ function install_packages() {
     # development and build packages
     # these are common on all cryptos
     echo "* Package installation!"
-    add-apt-repository -yu ppa:bitcoin/bitcoin  &>> ${SCRIPT_LOGFILE}
+	add-apt-repository -yu ppa:bitcoin/bitcoin  &>> ${SCRIPT_LOGFILE}
     apt-get -qq -o=Dpkg::Use-Pty=0 -o=Acquire::ForceIPv4=true update  &>> ${SCRIPT_LOGFILE}
+	apt-get -qqy -o=Dpkg::Use-Pty=0 -o=Acquire::ForceIPv4=true upgrade  &>> ${SCRIPT_LOGFILE}
     apt-get -qqy -o=Dpkg::Use-Pty=0 -o=Acquire::ForceIPv4=true install build-essential \
     protobuf-compiler libboost-all-dev autotools-dev automake libcurl4-openssl-dev \
     libboost-all-dev libssl-dev make autoconf libtool git apt-utils g++ \
@@ -743,7 +745,7 @@ sentinel=0;
 startnodes=0;
 
 # Execute getopt
-ARGS=$(getopt -o "hp:n:c:r:wsudx" -l "help,project:,net:,count:,release:,wipe,sentinel,update,debug,startnodes" -n "install.sh" -- "$@");
+ARGS=$(getopt -o "hp:n:c:r:k:wsudx" -l "help,project:,net:,count:,release:,key:,wipe,sentinel,update,debug,startnodes" -n "install.sh" -- "$@");
 
 #Bad arguments
 if [ $? -ne 0 ];
@@ -789,6 +791,15 @@ while true; do
                     then
                         release="$1";
                         SCVERSION="$1"
+                        shift;
+                    fi
+            ;;
+        -k|--key)
+            shift;
+                    if [ -n "$1" ];
+                    then
+                        key="$1";
+                        MNODE_KEY="$1"
                         shift;
                     fi
             ;;
