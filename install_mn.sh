@@ -236,8 +236,6 @@ function configure_firewall() {
     ufw allow ${SSH_INBOUND_PORT}/tcp         &>> ${SCRIPT_LOGFILE}
     # KISS, its always the same port for all interfaces
     ufw allow ${MNODE_INBOUND_PORT}/tcp       &>> ${SCRIPT_LOGFILE}
-    # This will only allow 6 connections every 30 seconds from the same IP address.
-    ufw limit OpenSSH	                      &>> ${SCRIPT_LOGFILE}
     ufw --force enable                        &>> ${SCRIPT_LOGFILE}
     echo "* Firewall ufw is active and enabled on system startup"
 
