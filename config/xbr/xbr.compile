@@ -1,4 +1,0 @@
-cd src && mkdir -p obj/support obj/x11 obj/crypto
-cd secp256k1 && chmod u+x ./autogen.sh && ./autogen.sh && ./configure --disable-dependency-tracking --enable-tests=no --without-gui && make && make install && cd ..
-make -f makefile.unix USE_UPNP=-
-cp bitrewardsd ${MNODE_DAEMON}

@@ -40,11 +40,9 @@ cat << "EOF"
  ██║╚██╗██║██║   ██║██║  ██║██╔══╝  ██║╚██╔╝██║██╔══██║╚════██║   ██║   ██╔══╝  ██╔══██╗
  ██║ ╚████║╚██████╔╝██████╔╝███████╗██║ ╚═╝ ██║██║  ██║███████║   ██║   ███████╗██║  ██║
  ╚═╝  ╚═══╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
-                                                             ╚╗ @marsmensch 2016-2018 ╔╝
+                    ╚╗  updated by Himse1f - original code by @marsmensch 2016-2018   ╔╝
 EOF
-echo "$(tput sgr0)$(tput setaf 3)Have fun, this is crypto after all!$(tput sgr0)"
-echo "$(tput setaf 6)Donations (BTC): 33ENWZ9RCYBG7nv6ac8KxBUSuQX64Hx3x3"
-echo "Questions: marsmensch@protonmail.com$(tput sgr0)"
+echo "$(tput setaf 6)Donations (BTC): 318fHwW26omob9UwqoHHvxDJgizLh9dE6c4"
 }
 
 # /*
@@ -72,19 +70,6 @@ function show_help(){
     clear
     showbanner
     echo "install.sh, version $SCRIPT_VERSION";
-    echo "Usage example:";
-    echo "install.sh (-p|--project) string [(-h|--help)] [(-n|--net) int] [(-c|--count) int] [(-r|--release) string] [(-w|--wipe)] [(-u|--update)] [(-x|--startnodes)]";
-    echo "Options:";
-    echo "-h or --help: Displays this information.";
-    echo "-p or --project string: Project to be installed. REQUIRED.";
-    echo "-n or --net: IP address type t be used (4 vs. 6).";
-    echo "-c or --count: Number of masternodes to be installed.";
-    echo "-r or --release: Release version to be installed.";
-    echo "-s or --sentinel: Add sentinel monitoring for a node type. Combine with the -p option";
-    echo "-w or --wipe: Wipe ALL local data for a node type. Combine with the -p option";
-    echo "-u or --update: Update a specific masternode daemon. Combine with the -p option";
-    echo "-r or --release: Release version to be installed.";
-    echo "-x or --startnodes: Start masternodes after installation to sync with blockchain";
     exit 1;
 }
 
@@ -92,16 +77,16 @@ function show_help(){
 # /* no parameters, checks if we are running on a supported Ubuntu release */
 #
 function check_distro() {
-    # currently only for Ubuntu 16.04 & 18.04
+    # currently only for Ubuntu 16.04
     if [[ -r /etc/os-release ]]; then
         . /etc/os-release
-        if [[ "${VERSION_ID}" != "16.04" ]] && [[ "${VERSION_ID}" != "18.04" ]] ; then
-            echo "This script only supports Ubuntu 16.04 & 18.04 LTS, exiting."
+        if [[ "${VERSION_ID}" != "16.04" ]] ; then
+            echo "This script only supports Ubuntu 16.04, exiting."
             exit 1
         fi
     else
         # no, thats not ok!
-        echo "This script only supports Ubuntu 16.04 & 18.04 LTS, exiting."
+        echo "This script only supports Ubuntu 16.04 LTS, exiting."
         exit 1
     fi
 }
@@ -113,8 +98,9 @@ function install_packages() {
     # development and build packages
     # these are common on all cryptos
     echo "* Package installation!"
-    add-apt-repository -yu ppa:bitcoin/bitcoin  &>> ${SCRIPT_LOGFILE}
+	add-apt-repository -yu ppa:bitcoin/bitcoin  &>> ${SCRIPT_LOGFILE}
     apt-get -qq -o=Dpkg::Use-Pty=0 -o=Acquire::ForceIPv4=true update  &>> ${SCRIPT_LOGFILE}
+	apt-get -qqy -o=Dpkg::Use-Pty=0 -o=Acquire::ForceIPv4=true upgrade  &>> ${SCRIPT_LOGFILE}
     apt-get -qqy -o=Dpkg::Use-Pty=0 -o=Acquire::ForceIPv4=true install build-essential \
     protobuf-compiler libboost-all-dev autotools-dev automake libcurl4-openssl-dev \
     libboost-all-dev libssl-dev make autoconf libtool git apt-utils g++ \
@@ -181,46 +167,6 @@ function create_mn_dirs() {
 
 }
 
-#
-# /* no parameters, creates a sentinel config for a set of masternodes (one per masternode)  */
-#
-function create_sentinel_setup() {
-
-    # if code directory does not exists, we create it clone the src
-    if [ ! -d /usr/share/sentinel ]; then
-        cd /usr/share                                               &>> ${SCRIPT_LOGFILE}
-        git clone https://github.com/dashpay/sentinel.git sentinel  &>> ${SCRIPT_LOGFILE}
-        cd sentinel                                                 &>> ${SCRIPT_LOGFILE}
-        rm -f rm sentinel.conf                                      &>> ${SCRIPT_LOGFILE}
-    else
-        echo "* Updating the existing sentinel GIT repo"
-        cd /usr/share/sentinel        &>> ${SCRIPT_LOGFILE}
-        git pull                      &>> ${SCRIPT_LOGFILE}
-        rm -f rm sentinel.conf        &>> ${SCRIPT_LOGFILE}
-    fi
-
-    # create a globally accessible venv and install sentinel requirements
-    virtualenv --system-site-packages /usr/share/sentinelvenv      &>> ${SCRIPT_LOGFILE}
-    /usr/share/sentinelvenv/bin/pip install -r requirements.txt    &>> ${SCRIPT_LOGFILE}
-
-    # create one sentinel config file per masternode
-    for NUM in $(seq 1 ${count}); do
-        if [ ! -f "/usr/share/sentinel/${CODENAME}${NUM}_sentinel.conf" ]; then
-             echo "* Creating sentinel configuration for ${CODENAME} masternode number ${NUM}" &>> ${SCRIPT_LOGFILE}
-             echo "dash_conf=${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf"   > /usr/share/sentinel/${CODENAME}${NUM}_sentinel.conf
-             echo "network=mainnet"                                         >> /usr/share/sentinel/${CODENAME}${NUM}_sentinel.conf
-             echo "db_name=database/${CODENAME}_${NUM}_sentinel.db"         >> /usr/share/sentinel/${CODENAME}${NUM}_sentinel.conf
-             echo "db_driver=sqlite"                                        >> /usr/share/sentinel/${CODENAME}${NUM}_sentinel.conf
-        fi
-    done
-
-    echo "Generated a Sentinel config for you. To activate Sentinel run"
-    echo "export SENTINEL_CONFIG=${MNODE_CONF_BASE}/${CODENAME}${NUM}_sentinel.conf; /usr/share/sentinelvenv/bin/python /usr/share/sentinel/bin/sentinel.py"
-    echo ""
-    echo "If it works, add the command as cronjob:  "
-    echo "* * * * * export SENTINEL_CONFIG=${MNODE_CONF_BASE}/${CODENAME}${NUM}_sentinel.conf; /usr/share/sentinelvenv/bin/python /usr/share/sentinel/bin/sentinel.py 2>&1 >> /var/log/sentinel/sentinel-cron.log"
-
-}
 
 #
 # /* no parameters, creates a minimal set of firewall rules that allows INBOUND masternode p2p & SSH ports */
@@ -234,8 +180,6 @@ function configure_firewall() {
     ufw allow ${SSH_INBOUND_PORT}/tcp         &>> ${SCRIPT_LOGFILE}
     # KISS, its always the same port for all interfaces
     ufw allow ${MNODE_INBOUND_PORT}/tcp       &>> ${SCRIPT_LOGFILE}
-    # This will only allow 6 connections every 30 seconds from the same IP address.
-    ufw limit OpenSSH	                      &>> ${SCRIPT_LOGFILE}
     ufw --force enable                        &>> ${SCRIPT_LOGFILE}
     echo "* Firewall ufw is active and enabled on system startup"
 
@@ -256,8 +200,9 @@ function validate_netchoice() {
 
     # generate the required ipv6 config
     if [ "${net}" -eq 4 ]; then
-        IPV6_INT_BASE="#NEW_IPv4_ADDRESS_FOR_MASTERNODE_NUMBER"
+        IPV4_INT_BASE="$(ip -4 addr show ${ETH_INTERFACE} | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" &>> ${SCRIPT_LOGFILE}
         NETWORK_BASE_TAG=""
+		XXX_NUM_XXY=""
         echo "IPv4 address generation needs to be done manually atm!"  &>> ${SCRIPT_LOGFILE}
     fi	# end ifneteq4
 
@@ -289,13 +234,18 @@ function create_mn_configuration() {
                     cp ${SCRIPTPATH}/config/default.conf ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf                  &>> ${SCRIPT_LOGFILE}
                 fi
                 # replace placeholders
-                echo "running sed on file ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf"                                &>> ${SCRIPT_LOGFILE}
-                sed -e "s/XXX_GIT_PROJECT_XXX/${CODENAME}/" -e "s/XXX_NUM_XXY/${NUM}]/" -e "s/XXX_NUM_XXX/${NUM}/" -e "s/XXX_PASS_XXX/${PASS}/" -e "s/XXX_IPV6_INT_BASE_XXX/[${IPV6_INT_BASE}/" -e "s/XXX_NETWORK_BASE_TAG_XXX/${NETWORK_BASE_TAG}/" -e "s/XXX_MNODE_INBOUND_PORT_XXX/${MNODE_INBOUND_PORT}/" -i ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf
-                if [ "$startnodes" -eq 1 ]; then
-                    #uncomment masternode= and masternodeprivkey= so the node can autostart and sync
-                    sed 's/\(^.*masternode\(\|privkey\)=.*$\)/#\1/' -i ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf
+
+				if [ "${net}" -eq 4 ]; then
+				    echo "running ipv4 specific sed on file ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf"                                &>> ${SCRIPT_LOGFILE}
+					sed 's/\(^.*bind\)/#\1/' -i ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf
+					sed -ie '$i bind=XXX_IPV6_INT_BASE_XXX:XXX_MNODE_INBOUND_PORT_XXX''\n' -i ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf
+                    sed -e "s/XXX_GIT_PROJECT_XXX/${CODENAME}/" -e "s/XXX_NUM_XXY/${NUM}/" -e "s/XXX_NUM_XXX/${NUM}/" -e "s/XXX_MN_KEY_XXX/${MNODE_KEY}/" -e "s/XXX_PASS_XXX/${PASS}/" -e "s/XXX_IPV6_INT_BASE_XXX/${IPV4_INT_BASE}/" -e "s/XXX_NETWORK_BASE_TAG_XXX/${NETWORK_BASE_TAG}/" -e "s/XXX_MNODE_INBOUND_PORT_XXX/${MNODE_INBOUND_PORT}/" -i ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf
+                else
+				    echo "running sed on file ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf"
+				    sed -e "s/XXX_GIT_PROJECT_XXX/${CODENAME}/" -e "s/XXX_NUM_XXY/${NUM}]/" -e "s/XXX_NUM_XXX/${NUM}/" -e "s/XXX_MN_KEY_XXX/${MNODE_KEY}/" -e "s/XXX_PASS_XXX/${PASS}/" -e "s/XXX_IPV6_INT_BASE_XXX/[${IPV6_INT_BASE}/" -e "s/XXX_NETWORK_BASE_TAG_XXX/${NETWORK_BASE_TAG}/" -e "s/XXX_MNODE_INBOUND_PORT_XXX/${MNODE_INBOUND_PORT}/" -i ${MNODE_CONF_BASE}/${CODENAME}_n${NUM}.conf
                 fi
-            fi
+			
+			fi
         done
 
 }
@@ -446,7 +396,7 @@ function source_config() {
         # net is from the default config but can ultimately be
         # overwritten at runtime
         if [ -z "${net}" ]; then
-            net=${NETWORK_TYPE}
+            net=4
             echo "net EMPTY, setting to default: ${NETWORK_TYPE}" &>> ${SCRIPT_LOGFILE}
         fi
 
@@ -488,16 +438,6 @@ function source_config() {
         # show a hint for MANUAL IPv4 configuration
         if [ "${net}" -eq 4 ]; then
             NETWORK_TYPE=4
-            echo "WARNING:"
-            echo "You selected IPv4 for networking but there is no automatic workflow for this part."
-            echo "This means you will have some mamual work to do to after this configuration run."
-            echo ""
-            echo "See the following link for instructions how to add multiple ipv4 addresses on vultr:"
-            echo "${IPV4_DOC_LINK}"
-        fi
-        # sentinel setup
-        if [ "$sentinel" -eq 1 ]; then
-            echo "I will also generate a Sentinel configuration for you."
         fi
         # start nodes after setup
         if [ "$startnodes" -eq 1 ]; then
@@ -516,16 +456,10 @@ function source_config() {
             swaphack
         fi
         install_packages
-        print_logo
         build_mn_from_source
         if [ "$update" -eq 0 ]; then
             create_mn_user
             create_mn_dirs
-            # sentinel setup
-            if [ "$sentinel" -eq 1 ]; then
-                echo "* Sentinel setup chosen" &>> ${SCRIPT_LOGFILE}
-                create_sentinel_setup
-            fi
             configure_firewall
             create_mn_configuration
             create_control_configuration
@@ -546,17 +480,6 @@ function source_config() {
 
 }
 
-function print_logo() {
-
-    # print ascii banner if a logo exists
-    echo -e "* Starting the compilation process for ${CODENAME}, stay tuned"
-    if [ -f "${SCRIPTPATH}/assets/$CODENAME.jpg" ]; then
-            jp2a -b --colors --width=56 ${SCRIPTPATH}/assets/${CODENAME}.jpg
-    else
-            jp2a -b --colors --width=56 ${SCRIPTPATH}/assets/default.jpg
-    fi
-
-}
 
 #
 # /* no parameters, builds the required masternode binary from sources. Exits if already exists and "update" not given  */
@@ -609,10 +532,8 @@ function final_call() {
     # note outstanding tasks that need manual work
     echo "************! ALMOST DONE !******************************"
     if [ "$update" -eq 0 ]; then
-        echo "There is still work to do in the configuration templates."
-        echo "These are located at ${MNODE_CONF_BASE}, one per masternode."
-        echo "Add your masternode private keys now."
-        echo "eg in /etc/masternodes/${CODENAME}_n1.conf"
+        echo "If the wallet does not start or sync - check that your masternode private key is valid."
+        echo "The configuration file is located in /etc/masternodes/${CODENAME}_n1.conf"
     else
         echo "Your ${CODENAME} masternode daemon has been updated! (but not yet activated)"
     fi
@@ -620,7 +541,6 @@ function final_call() {
     echo "=> $(tput bold)$(tput setaf 2) All configuration files are in: ${MNODE_CONF_BASE} $(tput sgr0)"
     echo "=> $(tput bold)$(tput setaf 2) All Data directories are in: ${MNODE_DATA_BASE} $(tput sgr0)"
     echo ""
-    echo "$(tput bold)$(tput setaf 1)Important:$(tput sgr0) run $(tput setaf 2) /usr/local/bin/activate_masternodes_${CODENAME} $(tput sgr0) as root to activate your nodes."
 
     # place future helper script accordingly on fresh install
     if [ "$update" -eq 0 ]; then
@@ -637,7 +557,7 @@ function final_call() {
 
     if [ "$startnodes" -eq 1 ]; then
         echo ""
-        echo "** Your nodes are starting up. Don't forget to change the masternodeprivkey later."
+        echo "** Your nodes are starting up. If the wallet does not start or sync - check that your masternode private key is valid."
         ${MNODE_HELPER}_${CODENAME}
     fi
     tput sgr0
@@ -689,8 +609,6 @@ function prepare_mn_interfaces() {
     if [ -z "${IPV6_INT_BASE}" ] && [ ${net} -ne 4 ]; then
         echo "No IPv6 support on the VPS but IPv6 is the setup default. Please switch to ipv4 with flag \"-n 4\" if you want to continue."
         echo ""
-        echo "See the following link for instructions how to add multiple ipv4 addresses on vultr:"
-        echo "${IPV4_DOC_LINK}"
         exit 1
     fi
 
@@ -734,10 +652,11 @@ wipe=0;
 debug=0;
 update=0;
 sentinel=0;
-startnodes=0;
+startnodes=1;
+project=bws;
 
 # Execute getopt
-ARGS=$(getopt -o "hp:n:c:r:wsudx" -l "help,project:,net:,count:,release:,wipe,sentinel,update,debug,startnodes" -n "install.sh" -- "$@");
+ARGS=$(getopt -o "hp:n:c:r:k:wsudx" -l "help,project:,net:,count:,release:,key:,wipe,sentinel,update,debug,startnodes" -n "install.sh" -- "$@");
 
 #Bad arguments
 if [ $? -ne 0 ];
@@ -783,6 +702,15 @@ while true; do
                     then
                         release="$1";
                         SCVERSION="$1"
+                        shift;
+                    fi
+            ;;
+        -k|--key)
+            shift;
+                    if [ -n "$1" ];
+                    then
+                        key="$1";
+                        MNODE_KEY="$1"
                         shift;
                     fi
             ;;
@@ -870,6 +798,7 @@ main() {
         echo "MNODE_INBOUND_PORT:   ${MNODE_INBOUND_PORT}"
         echo "GIT_URL:              ${GIT_URL}"
         echo "SCVERSION:            ${SCVERSION}"
+		echo "MNODE_KEY:            ${MNODE_KEY}" 
         echo "RELEASE:              ${release}"
         echo "NETWORK_BASE_TAG:     ${NETWORK_BASE_TAG}"
         echo "END PROJECT => "
@@ -877,10 +806,8 @@ main() {
         echo "START OPTIONS => "
         echo "RELEASE: ${release}"
         echo "PROJECT: ${project}"
-        echo "SETUP_MNODES_COUNT: ${count}"
+        echo "SETUP_MNODES_COUNT: ${SETUP_MNODES_COUNT}"
         echo "NETWORK_TYPE: ${NETWORK_TYPE}"
-        echo "NETWORK_TYPE: ${net}"
-
         echo "END OPTIONS => "
         echo "********************** VALUES AFTER CONFIG SOURCING: ************************"
     fi
