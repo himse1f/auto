@@ -5,21 +5,21 @@
 #  ██║╚██╗██║██║   ██║██║  ██║██╔══╝  ██║╚██╔╝██║██╔══██║╚════██║   ██║   ██╔══╝  ██╔══██╗
 #  ██║ ╚████║╚██████╔╝██████╔╝███████╗██║ ╚═╝ ██║██║  ██║███████║   ██║   ███████╗██║  ██║
 #  ╚═╝  ╚═══╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
-#                                                              ╚╗ @marsmensch 2016-2018 ╔╝
+#                                         ╚╗ updated by Himse1f - @marsmensch 2016-2018 ╔╝
 #
-# version 	v0.9.6
+# version 	v0.9.6h
 # date    	2018-04-05
 #
 # function:	part of the masternode scripts, source the proper config file
 #
 # 	Instructions:
-#               Run this script w/ the desired parameters. Leave blank or use -h for help.
+#               Run this script 
 #
 #	Platforms:
 #               - Linux Ubuntu 16.04 LTS ONLY on a Vultr, Hetzner or DigitalOcean VPS
 #               - Generic Ubuntu support will be added at a later point in time
 #
-# Twitter 	@marsmensch
+
 
 # Useful variables
 declare -r CRYPTOS=`ls -l config/ | egrep '^d' | awk '{print $9}' | xargs echo -n; echo`
@@ -68,7 +68,6 @@ function get_confirmation() {
 #
 function show_help(){
     clear
-    showbanner
     echo "install.sh, version $SCRIPT_VERSION";
     exit 1;
 }
@@ -467,7 +466,6 @@ function source_config() {
         fi
         set_permissions
         cleanup_after
-        showbanner
         final_call
         #if [ "$update" -eq 1 ]; then
             # need to update the systemctl daemon, else an error will occur when running `systemctl enable` on a changed systemd process
@@ -762,7 +760,7 @@ source ${SCRIPTPATH}/config/default.env
 main() {
 
     echo "starting" &> ${SCRIPT_LOGFILE}
-    showbanner
+
 
     # debug
     if [ "$debug" -eq 1 ]; then
