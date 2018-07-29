@@ -751,6 +751,7 @@ if [ -z "$key" ]
 then
     echo "Missing the masternode private key command. Use -k command to enter the private key for the installation to proceed."
 	echo "If the masternode private key is not valid, the wallet service will not auto start and sync correctly"
+	exit 1
 fi
 
 
