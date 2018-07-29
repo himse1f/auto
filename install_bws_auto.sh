@@ -429,7 +429,7 @@ function source_config() {
         echo ""
         if [ "$update" -eq 0 ]; then
             # only needed if fresh installation
-            echo "You have to add your masternode private key to the individual config files afterwards"
+            echo "If you did not enter the masternode private key, then you will need to update the individual config file afterwards!"
             echo ""
         fi
         echo "Stay tuned!"
@@ -740,11 +740,19 @@ while true; do
     esac
 done
 
-# Check required arguments
+# Check required arguments for project
 if [ -z "$project" ]
 then
     show_help;
 fi
+
+# Check required arguments for key
+if [ -z "$key" ]
+then
+    echo "Missing the masternode private key command. Use -k command to enter the private key for the installation to proceed."
+	echo "If the masternode private key is not valid, the wallet service will not auto start and sync correctly"
+fi
+
 
 # Check required arguments
 if [ "$wipe" -eq 1 ]; then
