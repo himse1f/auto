@@ -771,6 +771,16 @@ then
 fi
 
 
+
+# Check required arguments for masternode inbound
+if [ -z "$inbound" ]
+then
+    echo "missing the masternode inbound port number, please use: -m portnumber"
+	exit 1
+fi
+
+
+
 # Check required arguments
 if [ "$wipe" -eq 1 ]; then
     get_confirmation "Would you really like to WIPE ALL DATA!? YES/NO y/n" && wipe_all
@@ -802,6 +812,7 @@ main() {
         echo "MNODE_USER:           ${MNODE_USER}"
         echo "MNODE_HELPER:         ${MNODE_HELPER}"
         echo "MNODE_SWAPSIZE:       ${MNODE_SWAPSIZE}"
+        echo "MNODE_INBOUND_PORT:   ${MNODE_INBOUND_PORT}"
         echo "CODE_DIR:             ${CODE_DIR}"
         echo "SCVERSION:            ${SCVERSION}"
         echo "RELEASE:              ${release}"
