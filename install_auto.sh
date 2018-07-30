@@ -70,10 +70,10 @@ function show_help(){
     clear
 	echo "install.sh, version $SCRIPT_VERSION";
     echo "Usage example:";
-    echo "install.sh (-p|--project) string [(-i|--inbound) int] [(-k|--key) string]";
+    echo "install.sh (-p|--project) string [(-m|--inbound) int] [(-k|--key) string]";
     echo "Options:";
     echo "-p or --project string: Project to be installed. REQUIRED.";
-    echo "-port: enter the port required for the masternode.";
+    echo "-m or --inbound: enter the masternode port number.";
     echo "-k or --key: Masternodeprivkey to be added to configuration file.";
     exit 1;
 }
@@ -693,7 +693,7 @@ while true; do
                         shift;
                     fi
             ;;
-        -i|--inbound)
+        -m|--inbound)
             shift;
                     if [ -n "$1" ];
                     then
