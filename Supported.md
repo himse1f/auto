@@ -2,10 +2,8 @@
 
 
 
-Coin					Name				Port
+Bitcoin W Spectrum >>> bws
 
-Bitcoin W Spectrum		bws
+Ducat >>> dc
 
-Ducat					dc
-
-Linda					linda
+Linda >>> linda
