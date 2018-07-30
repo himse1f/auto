@@ -661,7 +661,7 @@ sentinel=0;
 startnodes=1;
 
 # Execute getopt
-ARGS=$(getopt -o "hp:n:c:r:k:wsudx" -l "help,project:,net:,count:,release:,key:,inbound:,wipe,sentinel,update,debug,startnodes" -n "install.sh" -- "$@");
+ARGS=$(getopt -o "hp:n:c:r:k:m:wsudx" -l "help,project:,net:,count:,release:,key:,inbound:,wipe,sentinel,update,debug,startnodes" -n "install.sh" -- "$@");
 
 #Bad arguments
 if [ $? -ne 0 ];
@@ -698,6 +698,7 @@ while true; do
                     if [ -n "$1" ];
                     then
                         inbound="$1";
+						MNODE_INBOUND_PORT="$1";
                         shift;
                     fi
             ;;
