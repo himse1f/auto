@@ -70,7 +70,7 @@ function show_help(){
     clear
 	echo "install.sh, version $SCRIPT_VERSION";
     echo "Usage example:";
-    echo "install.sh (-p|--project) string [(-port|--port) int] [(-k|--key) string]";
+    echo "install.sh (-p|--project) string [(-i|--inbound) int] [(-k|--key) string]";
     echo "Options:";
     echo "-p or --project string: Project to be installed. REQUIRED.";
     echo "-port: enter the port required for the masternode.";
@@ -444,7 +444,7 @@ function source_config() {
         # show a hint for MANUAL IPv4 configuration
         if [ "${net}" -eq 4 ]; then
             NETWORK_TYPE=4
-			MNODE_INBOUND_PORT=${port}
+			MNODE_INBOUND_PORT=${inbound}
         fi
         # start nodes after setup
         if [ "$startnodes" -eq 1 ]; then
@@ -661,7 +661,7 @@ sentinel=0;
 startnodes=1;
 
 # Execute getopt
-ARGS=$(getopt -o "hp:n:c:r:k:wsudx" -l "help,project:,net:,count:,release:,key:,port:,wipe,sentinel,update,debug,startnodes" -n "install.sh" -- "$@");
+ARGS=$(getopt -o "hp:n:c:r:k:wsudx" -l "help,project:,net:,count:,release:,key:,inbound:,wipe,sentinel,update,debug,startnodes" -n "install.sh" -- "$@");
 
 #Bad arguments
 if [ $? -ne 0 ];
@@ -693,11 +693,11 @@ while true; do
                         shift;
                     fi
             ;;
-        -port|--port)
+        -i|--inbound)
             shift;
                     if [ -n "$1" ];
                     then
-                        port="$1";
+                        inbound="$1";
                         shift;
                     fi
             ;;
@@ -827,7 +827,7 @@ main() {
         echo "START OPTIONS => "
         echo "RELEASE: ${release}"
         echo "PROJECT: ${project}"
-        echo "MNODE_INBOUND_PORT: ${port}"
+        echo "MNODE_INBOUND_PORT: ${inbound}"
         echo "SETUP_MNODES_COUNT: ${SETUP_MNODES_COUNT}"
         echo "NETWORK_TYPE: ${NETWORK_TYPE}"
         echo "END OPTIONS => "
