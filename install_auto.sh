@@ -405,6 +405,17 @@ function source_config() {
             net=4
             echo "net EMPTY, setting to default: ${NETWORK_TYPE}" &>> ${SCRIPT_LOGFILE}
         fi
+		
+		
+		
+        # masternode inbound is from the default config but can ultimately be
+        # overwritten at runtime
+        if [ -z "${inbound}" ]; then
+            inbound=${MNODE_INBOUND_PORT}
+            echo "inbound masternode port is EMPTY, setting to default: ${MNODE_INBOUND_PORT}" &>> ${SCRIPT_LOGFILE}
+        fi
+		
+		
 
         # main block of function logic starts here
         # if update flag was given, check if all required mn-helper files exist
@@ -769,16 +780,6 @@ then
 	echo "If the masternode private key is not valid, the wallet service will not auto start and sync correctly"
 	exit 1
 fi
-
-
-
-# Check required arguments for masternode inbound
-if [ -z "$inbound" ]
-then
-    echo "missing the masternode inbound port number, please use: -m portnumber"
-	exit 1
-fi
-
 
 
 # Check required arguments
