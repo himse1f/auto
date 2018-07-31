@@ -1,9 +1,7 @@
 # supported coins
 
 
-
-Bitcoin W Spectrum >>> bws
-
-Ducat >>> dc
-
-Linda >>> linda
+Description			>>					Project
+- Bitcoin W Spectrum		>>		bws
+- Ducat									>>		dc
+- Linda									>>		linda
