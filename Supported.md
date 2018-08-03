@@ -6,3 +6,5 @@ Description			>>					Project
 - Ducat									>>		dc
 - Linda									>>		linda
 - Bitcoin Green									>>		bitg
+- Vsync					>>		vsx
+- Digiwage				>>		wage
