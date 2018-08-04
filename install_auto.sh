@@ -75,6 +75,8 @@ function show_help(){
     echo "-p or --project string: Project to be installed. REQUIRED.";
     echo "-m or --inbound: enter the masternode port number.";
     echo "-k or --key: Masternodeprivkey to be added to configuration file.";
+	echo "-b or --strap: bootstrap the masternode if .strap file exists in the corresponding config folder.";
+	
     exit 1;
 }
 
@@ -531,8 +533,22 @@ function build_mn_from_source() {
 
                 # compilation starts here
                 source ${SCRIPTPATH}/config/${CODENAME}/${CODENAME}.compile | pv -t -i0.1
+				
+                if [ "$strap" -eq 1 ]; then
+                   echo "option to bootstrap was set!"
+                   source ${SCRIPTPATH}/config/${CODENAME}/${CODENAME}.strap | pv -t -i0.1
+                fi
+				
+				
         else
-                echo "* Daemon already in place at ${MNODE_DAEMON}, not compiling"
+                if [ "$strap" -eq 1 ]; then
+                   echo "option to bootstrap was set!"
+                   source ${SCRIPTPATH}/config/${CODENAME}/${CODENAME}.strap | pv -t -i0.1
+                fi
+				
+				echo "* Daemon already in place at ${MNODE_DAEMON}, not compiling"
+				
+				
         fi
 
         # if it's not available after compilation, theres something wrong
@@ -670,9 +686,10 @@ debug=0;
 update=0;
 sentinel=0;
 startnodes=1;
+strap=0;
 
 # Execute getopt
-ARGS=$(getopt -o "hp:n:c:r:k:m:wsudx" -l "help,project:,net:,count:,release:,key:,inbound:,wipe,sentinel,update,debug,startnodes" -n "install.sh" -- "$@");
+ARGS=$(getopt -o "hp:n:c:r:k:m:wsudxb" -l "help,project:,net:,count:,release:,key:,inbound:,wipe,sentinel,update,debug,startnodes,strap" -n "install.sh" -- "$@");
 
 #Bad arguments
 if [ $? -ne 0 ];
@@ -759,6 +776,11 @@ while true; do
             shift;
                     startnodes="1";
             ;;
+        -b|--strap)
+            shift;
+                    strap="1";
+            ;;			
+
 
         --)
             shift;
