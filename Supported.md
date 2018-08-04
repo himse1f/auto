@@ -8,3 +8,4 @@ Description			>>					Project
 - Bitcoin Green									>>		bitg
 - Vsync					>>		vsx
 - Digiwage				>>		wage
+- Syndicate				>> 		synx
