@@ -2,7 +2,7 @@
 
 apt-get -qqy install unzip
 mkdir -p /var/lib/masternodes/${CODENAME}${count}/temp
-wget -O /var/lib/masternodes/${CODENAME}${count}/temp/linda.zip https://www.dropbox.com/s/90d3qxu72syb5et/bootstrap_latest.zip?dl=0
+wget -O /var/lib/masternodes/${CODENAME}${count}/temp/linda.zip http://bit.ly/lindabootstrap?dl=0
 cd /var/lib/masternodes/${CODENAME}${count}/temp/
 unzip linda.zip
 rm linda.zip 2> /dev/null
