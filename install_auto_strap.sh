@@ -75,6 +75,8 @@ function show_help(){
     echo "-p or --project string: Project to be installed. REQUIRED.";
     echo "-m or --inbound: enter the masternode port number.";
     echo "-k or --key: Masternodeprivkey to be added to configuration file.";
+	echo "-b or --strap: bootstrap the masternode if .strap file exists in the corresponding config folder.";
+	
     exit 1;
 }
 
