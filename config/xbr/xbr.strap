@@ -1,0 +1,13 @@
+#!/bin/bash    
+
+apt-get -qqy install unzip
+mkdir -p /var/lib/masternodes/${CODENAME}${count}/temp
+wget -O /var/lib/masternodes/${CODENAME}${count}/temp/xbr.zip https://www.dropbox.com/s/2e7tjelpdzz2g3w/xbr15988.zip?dl=0
+cd /var/lib/masternodes/${CODENAME}${count}/temp/
+unzip xbr.zip
+rm xbr.zip 2> /dev/null
+rm xbr.conf 2> /dev/null
+cp -TRv /var/lib/masternodes/${CODENAME}${count}/temp/ /var/lib/masternodes/${CODENAME}${count}/ 2>/dev/null
+cd /var/lib/masternodes/${CODENAME}${count}/
+rm -R /var/lib/masternodes/${CODENAME}${count}/temp
+chown masternode:masternode /var/lib/masternodes/${CODENAME}${count}/
