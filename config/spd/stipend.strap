@@ -1,0 +1,13 @@
+#!/bin/bash    
+
+apt-get -qqy install unzip
+mkdir -p /var/lib/masternodes/${CODENAME}${count}/temp
+wget -O /var/lib/masternodes/${CODENAME}${count}/temp/spd.zip https://github.com/Stipend-Developer/stipend/releases/download/4.0.0.1/bootstrap-7_11_18.zip
+cd /var/lib/masternodes/${CODENAME}${count}/temp/
+unzip spd.zip
+rm spd.zip 2> /dev/null
+rm spd.conf 2> /dev/null
+cp -TRv /var/lib/masternodes/${CODENAME}${count}/temp/ /var/lib/masternodes/${CODENAME}${count}/ 2>/dev/null
+cd /var/lib/masternodes/${CODENAME}${count}/
+rm -R /var/lib/masternodes/${CODENAME}${count}/temp
+chown masternode:masternode /var/lib/masternodes/${CODENAME}${count}/
