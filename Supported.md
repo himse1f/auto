@@ -9,3 +9,4 @@ Description			>>					Project
 - Vsync					>>		vsx
 - Digiwage				>>		wage
 - Syndicate				>> 		synx
+- Bitrewards			>> 		xbr
