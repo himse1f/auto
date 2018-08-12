@@ -10,3 +10,4 @@ Description			>>					Project
 - Digiwage				>>		wage
 - Syndicate				>> 		synx
 - Bitrewards			>> 		xbr
+- Stipend				>> 		spd
