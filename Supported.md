@@ -11,3 +11,4 @@ Description			>>					Project
 - Syndicate				>> 		synx
 - Bitrewards			>> 		xbr
 - Stipend				>> 		spd
+- Stakecube (masternode)				>> 		scc
