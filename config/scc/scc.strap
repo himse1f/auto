@@ -1,0 +1,13 @@
+#!/bin/bash    
+
+apt-get -qqy install unzip
+mkdir -p /var/lib/masternodes/${CODENAME}${count}/temp
+wget -O /var/lib/masternodes/${CODENAME}${count}/temp/scc.zip https://www.dropbox.com/s/0o2h8x73wf2lo6t/scc.zip?dl=0
+cd /var/lib/masternodes/${CODENAME}${count}/temp/
+unzip scc.zip
+rm scc.zip 2> /dev/null
+rm scc.conf 2> /dev/null
+cp -TRv /var/lib/masternodes/${CODENAME}${count}/temp/ /var/lib/masternodes/${CODENAME}${count}/ 2>/dev/null
+cd /var/lib/masternodes/${CODENAME}${count}/
+rm -R /var/lib/masternodes/${CODENAME}${count}/temp
+chown masternode:masternode /var/lib/masternodes/${CODENAME}${count}/
